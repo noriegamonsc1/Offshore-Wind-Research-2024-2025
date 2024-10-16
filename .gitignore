@@ -1,7 +1,18 @@
+*.zip
+*.xml
+*.iso.xml
+*.npz
+*.log
+__pycache__/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
+
+
+# Ignore all files in the 'data' folder
+/data/*
+
 
 # C extensions
 *.so
