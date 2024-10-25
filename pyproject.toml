@@ -1,0 +1,32 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "offshore_wind_nj"
+version = "0.0.1"
+description = "This project analyzes Sentinel 1 SAR Level 2 data to assess wind patterns and optimize the location and orientation of offshore wind turbines. Research conducted from Fall 2024 to Spring 2025 focuses on data collection, management, and machine learning. Technologies used include Python, RAPIDS, PyTorch, ArcGIS, and ERDAS."
+authors = [
+  { name = "Cristian C Noriega M" },
+]
+license = { file = "LICENSE" }
+readme = "README.md"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License"
+]
+requires-python = "~=3.12"
+
+[tool.black]
+line-length = 99
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.venv
+)/
+'''
+
+[tool.ruff.lint.isort]
+known_first_party = ["offshore_wind_nj"]
+force_sort_within_sections = true
