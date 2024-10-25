@@ -73,7 +73,6 @@ pyshp==2.3.1
 python-dateutil 
 python-dotenv==1.0.1
 pytz==2024.2
-pywin32
 pyzmq
 rasterio==1.4.1
 referencing==0.35.1
