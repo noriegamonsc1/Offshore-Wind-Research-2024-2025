@@ -7,7 +7,7 @@ import cartopy.feature as cfeature
 from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
 from loguru import logger
 
-def plot_wind_field(owi_speed, owi_dir, lat, lon, title, output_path=False, quiver_density=20):
+def plot_wind_field(owi_speed, owi_dir, lat, lon, title = None, output_path=False, quiver_density=20):
     """
     Plot the wind field using the provided speed, direction, latitude, and longitude data.
     
@@ -28,7 +28,10 @@ def plot_wind_field(owi_speed, owi_dir, lat, lon, title, output_path=False, quiv
                             transform=ccrs.PlateCarree(), cmap='jet')
 
     # Title
-    ax.set_title(title, fontsize=16, fontweight='bold', loc='left')
+    if title is not None:
+        ax.set_title(title, fontsize=16, fontweight='bold', loc='left')
+    else:
+        ax.set_title("Offshore Wind Plot", fontsize=16, fontweight='bold', loc='left')
 
     # Extents with Margin
     lon_margin, lat_margin = 0.1, 0.1  # Adjust as necessary
