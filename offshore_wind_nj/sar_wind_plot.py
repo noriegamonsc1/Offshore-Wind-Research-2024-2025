@@ -6,20 +6,29 @@ import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
 from loguru import logger
+from pathlib import Path
+from offshore_wind_nj.data_loader import extract_datetime_from_filename, data_files, all_arrays
+from offshore_wind_nj.config import FIGURES_DIR
 
-def plot_wind_field(owi_speed, owi_dir, lat, lon, title = None, output_path=False, quiver_density=20):
+def plot_wind_field(idx, save=False, quiver_density=20):
     """
-    Plot the wind field using the provided speed, direction, latitude, and longitude data.
+    Plot the wind field using wind speed, direction, latitude, and longitude data.
     
     Parameters:
-        owi_speed (ndarray): Array of wind speed data.
-        owi_dir (ndarray): Array of wind direction data.
-        lat (ndarray): Array of latitude values.
-        lon (ndarray): Array of longitude values.
-        title (str): Title for the plot.
-        output_path (str or bool): Path to save the plot or False to display on screen.
+        idx (int): Index of the data file to plot in all_arrays.
+        save (bool): If True, saves the plot; if False, displays on screen.
         quiver_density (int): Density of quiver arrows.
     """
+    # Get the variables speed, direction, latitude, and longitude by index
+    owi_speed = all_arrays[idx][0]
+    owi_dir = all_arrays[idx][1]
+    lat = all_arrays[idx][2]
+    lon = all_arrays[idx][3]
+
+    # Extract filename, date, start time, and end time from data file name
+    filename, date, start_time, end_time = extract_datetime_from_filename(data_files[idx])
+    title = f"Sentinel-1 Ocean Wind Field (OWI)\n(Start: {start_time}, End: {end_time} on {date})"
+
     fig = plt.figure(figsize=(15, 15))
     ax = plt.axes(projection=ccrs.PlateCarree())
 
@@ -27,14 +36,11 @@ def plot_wind_field(owi_speed, owi_dir, lat, lon, title = None, output_path=Fals
     carto_map = ax.contourf(lon, lat, owi_speed, levels=100,
                             transform=ccrs.PlateCarree(), cmap='jet')
 
-    # Title
-    if title is not None:
-        ax.set_title(title, fontsize=16, fontweight='bold', loc='left')
-    else:
-        ax.set_title("Offshore Wind Plot", fontsize=16, fontweight='bold', loc='left')
+    # Title and Labels
+    ax.set_title(title, fontsize=16, fontweight='bold', loc='left')
 
-    # Extents with Margin
-    lon_margin, lat_margin = 0.1, 0.1  # Adjust as necessary
+    # Set extent with margin
+    lon_margin, lat_margin = 0.1, 0.1
     ax.set_xlim(np.amin(lon) - lon_margin, np.amax(lon) + lon_margin)
     ax.set_ylim(np.amin(lat) - lat_margin, np.amax(lat) + lat_margin)
 
@@ -48,20 +54,27 @@ def plot_wind_field(owi_speed, owi_dir, lat, lon, title = None, output_path=Fals
     cbar = plt.colorbar(carto_map, ax=ax, shrink=0.5, pad=0.05)
     cbar.set_label('SAR Wind Speed [m.s-1]', fontsize=15, labelpad=25)
 
-    # Calculate and Draw Wind Vectors
-    dx = np.cos(np.radians(owi_dir))  # u component
-    dy = np.sin(np.radians(owi_dir))  # v component
+    # Calculate and draw wind vectors
+    dx = np.cos(np.radians(owi_dir))
+    dy = np.sin(np.radians(owi_dir))
     ax.quiver(lon, lat, dx, dy, angles='xy', color='black', scale=40, width=0.002, regrid_shape=quiver_density)
 
     # Draw gridlines and set label formatting
     gl = ax.gridlines(crs=ccrs.PlateCarree(), draw_labels=True, linewidth=1, color='gray', alpha=0.6, linestyle=':')
-    gl.xformatter, gl.yformatter = LONGITUDE_FORMATTER, LATITUDE_FORMATTER
-    gl.xlabels_top, gl.ylabels_right = False, False
-    gl.xlabel_style = gl.ylabel_style = {'color': 'black', 'weight': 'bold', 'size': 10}
+    gl.xformatter = LONGITUDE_FORMATTER
+    gl.yformatter = LATITUDE_FORMATTER
+    gl.xlabels_top = False
+    gl.ylabels_right = False
+    gl.xlabel_style = {'color': 'black', 'weight': 'bold', 'size': 10}
+    gl.ylabel_style = {'color': 'black', 'weight': 'bold', 'size': 10}
+
+    # Define output path with PNG extension
+    output_path = FIGURES_DIR / f"{filename}.png"
 
     # Show or save the plot
-    if output_path:
+    if save:
         plt.savefig(output_path, bbox_inches='tight')
+        plt.close(fig)
         logger.info(f"Plot saved to {output_path}.")
     else:
         plt.show()
