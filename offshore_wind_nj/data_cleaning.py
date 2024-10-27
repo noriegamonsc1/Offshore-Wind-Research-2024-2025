@@ -2,26 +2,11 @@ from scipy.spatial import cKDTree
 import numpy as np
 
 def idw_interpolation(coords, values, target_coords, k=4, p=2):
-    """
-    Interpolates values for target coordinates based on known values using Inverse Distance Weighting (IDW).
-    
-    Parameters:
-        coords (np.ndarray): Known coordinates as a (n, 2) array.
-        values (np.ndarray): Known values at `coords`.
-        target_coords (np.ndarray): Coordinates for interpolation.
-        k (int): Number of nearest neighbors.
-        p (int): Power parameter for IDW.
-    
-    Returns:
-        np.ndarray: Interpolated values at `target_coords`.
-    """
     tree = cKDTree(coords)
     distances, indices = tree.query(target_coords, k=k)
     
-    # Calculate weights, handle division by zero in distances
-    weights = np.zeros_like(distances)
-    with np.errstate(divide='ignore', invalid='ignore'):
-        weights = 1 / (distances ** p)
+    # Calculate weights
+    weights = 1 / (distances ** p)
     weights /= weights.sum(axis=1, keepdims=True)
     
     # Interpolated values
