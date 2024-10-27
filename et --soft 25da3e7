@@ -1,0 +1,32 @@
+[33mde46e1a[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m)[m Merge branch 'main' of https://github.com/noriegamonsc1/Offshore-Wind-Research-2024-2025
+[33m25da3e7[m Save local changes before pull
+[33mbcba79b[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m  Page up
+[33m3bdb149[m edits notebook
+[33md38e03f[m changes to data_cleaning module
+[33m2e2a18a[m added data cleaning as modules
+[33m47a46bf[m edited notebook with cleaning functions
+[33mf89351b[m Merge branch 'main' of github.com:noriegamonsc1/Offshore-Wind-Research-2024-2025 into main
+[33mb5df5c9[m Merge branch 'main' of github.com:noriegamonsc-2/Offshore-Wind-Research-2024-2025 into main
+[33m0793eb6[m edited the notebook
+[33m8b45ec9[m added plot by arrays
+[33mf93cd3b[m edits in the Jupyter notebook
+[33m01e7415[m added data cleaning module, still in review
+[33m4ced2aa[m stop tracking reports/figures folder
+[33m2f4f0c8[m updated visualization scripts and ignore the figures modules
+[33ma15d313[m added dynamic title and file name extraction function
+[33ma58e90a[m added data management & visualization functions
+[33mc1955d2[m added dynamc directoy handling
+[33md415d89[m edited requirements.txt
+[33me18ad13[m edited requirements.txt
+[33m7efacac[m deleted extra lines from requirements.txt
+[33m07d0d2d[m edited requirements.txt
+[33m5ff7d6e[m updated the module structure, still editing
+[33mef290a4[m edited project structure
+[33m58189d8[m added environment files
+[33m9517168[m test
+[33m0d0521b[m Updated unsupervised notebook
+[33m354e9c9[m Update README.md
+[33m47f4f42[m Test SSH push
+[33m5615ff6[m Merge master into main and resolve conflicts
+[33mea86301[m Initial commit
+[33m9a1fd28[m Initial commit
