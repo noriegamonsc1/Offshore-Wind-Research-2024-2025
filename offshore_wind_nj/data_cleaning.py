@@ -1,6 +1,9 @@
 from scipy.spatial import cKDTree
 import numpy as np
 
+def find_zeros(arr):
+    return np.any(arr[0] == 0)
+
 def idw_interpolation(coords, values, target_coords, k=4, p=2):
     tree = cKDTree(coords)
     distances, indices = tree.query(target_coords, k=k)
