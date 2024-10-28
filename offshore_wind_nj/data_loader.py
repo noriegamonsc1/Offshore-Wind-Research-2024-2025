@@ -14,7 +14,7 @@ data_files = list(config.PROCESSED_DATA_DIR.glob('*.npz'))
 
 # Global variable to store all loaded arrays
 all_arrays = []
-cleaned_files = []
+removed_files = []
 
 def load_data(input_files):
     """
@@ -23,9 +23,9 @@ def load_data(input_files):
     Parameters:
         input_files (list): List of paths to the input .npz files.
     """
-    global all_arrays, cleaned_files  # Declare that we are using the global variable
+    global all_arrays, removed_files  # Declare that we are using the global variable
     all_arrays = []  # Clear the list before loading new data
-    cleaned_files = []
+    removed_files = []
     for input_file in input_files:
         # logger.info(f"Loading data from {input_file}...")
         with np.load(input_file) as data:
@@ -34,13 +34,18 @@ def load_data(input_files):
             lat = data['lat']
             lon = data['lon']
 
-            # if np.any(owi_speed == 0):
-            #     cleaned_files.append(input_file)
-            #     clean = (owi_speed, owi_dir, lat, lon)
-            #     all_arrays.append(fill_zeros(clean))
-            # else:
-            all_arrays.append((owi_speed, owi_dir, lat, lon))
-        # logger.success(f"Data loaded successfully from {input_file}.")
+            if np.any(owi_speed == 0):
+                # Skip if entire array is zero; otherwise, clean and add
+                if np.all(owi_speed == 0):
+                    data_files.remove(input_file)
+                    removed_files.append(input_file)
+                    logger.info(f"Removed file due to zero values in owi_speed: {input_file}")
+                    continue  # Skip if all values are zero
+                else:
+                    clean = (owi_speed, owi_dir, lat, lon)
+                    all_arrays.append(fill_zeros(clean))
+            else:
+                all_arrays.append((owi_speed, owi_dir, lat, lon))
 
 def load_single_data(input_file):
     """
@@ -92,7 +97,7 @@ def extract_datetime_from_filename(file_path: Path) -> Tuple[str, str, str]:
 if __name__ == "__main__":
     print(f"{__name__} run as a module")
 else:
-    data_files = list(config.PROCESSED_DATA_DIR.glob('*.npz'))
+    # data_files = list(config.PROCESSED_DATA_DIR.glob('*.npz'))
     
     # Call the load_data function to populate all_arrays
     load_data(data_files)
