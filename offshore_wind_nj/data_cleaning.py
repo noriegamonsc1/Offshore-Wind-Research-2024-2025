@@ -1,5 +1,6 @@
 from scipy.spatial import cKDTree
 import numpy as np
+# from offshore_wind_nj.data_loader import all_arrays
 
 def find_zeros(arr):
     return np.any(arr[0] == 0)
@@ -46,6 +47,9 @@ def fill_zeros(array):
     filled_direction[mask] = idw_interpolation(valid_coords, valid_direction, target_coords)
     
     return filled_speed, filled_direction, lat, lon
+
+# def clean_list(all_arrays):
+#     speed_indices = [i for i, arr in enumerate(all_arrays) if find_zeros]
 # def fill_zeros(array):
 #     """
 #     Fill missing or zero-speed values using IDW interpolation.
