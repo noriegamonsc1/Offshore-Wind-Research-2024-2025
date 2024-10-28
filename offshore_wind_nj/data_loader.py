@@ -45,8 +45,9 @@ def load_data(input_files):
                     clean = (owi_speed, owi_dir, lat, lon)
                     all_arrays.append(fill_zeros(clean))
                     logger.info(f"{len(data_files)} Total data_files after cleaning index {i}, {len(all_arrays)}")
-            continue
-        all_arrays.append((owi_speed, owi_dir, lat, lon))
+            else:
+                all_arrays.append((owi_speed, owi_dir, lat, lon))
+            all_arrays.append((owi_speed, owi_dir, lat, lon))
 
 def load_single_data(input_file):
     """
