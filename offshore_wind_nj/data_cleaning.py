@@ -15,6 +15,37 @@ def idw_interpolation(coords, values, target_coords, k=4, p=2):
     # Interpolated values
     return np.sum(values[indices] * weights, axis=1)
 
+# def fill_zeros(array):
+#     """
+#     Fill missing or zero-speed values using IDW interpolation.
+    
+#     Parameters:
+#         array : tuple of np.ndarray
+#             A tuple containing speed, direction, latitude, and longitude arrays.
+    
+#     Returns:
+#         tuple of np.ndarray: Filled speed, filled direction, latitude, and longitude arrays.
+#     """
+#     speed, direction, lat, lon = array
+    
+#     # Identify pixels with speed 0 and direction 180
+#     mask = (speed == 0) & (direction == 180)
+    
+#     # Get valid points (where speed != 0 and direction != 180)
+#     valid_data_mask = ~mask
+#     valid_speed = speed[valid_data_mask]
+#     valid_direction = direction[valid_data_mask]
+#     x, y = np.meshgrid(np.arange(speed.shape[1]), np.arange(speed.shape[0]))
+#     valid_coords = np.column_stack((x[valid_data_mask], y[valid_data_mask]))
+#     target_coords = np.column_stack((x[mask], y[mask]))
+    
+#     # Interpolate values using IDW
+#     filled_speed = speed.copy()
+#     filled_direction = direction.copy()
+#     filled_speed[mask] = idw_interpolation(valid_coords, valid_speed, target_coords)
+#     filled_direction[mask] = idw_interpolation(valid_coords, valid_direction, target_coords)
+    
+#     return filled_speed, filled_direction, lat, lon
 def fill_zeros(array):
     """
     Fill missing or zero-speed values using IDW interpolation.
@@ -28,21 +59,31 @@ def fill_zeros(array):
     """
     speed, direction, lat, lon = array
     
-    # Identify pixels with speed 0 and direction 180
-    mask = (speed == 0) & (direction == 180)
+    # Identify pixels with speed 0, regardless of direction
+    mask = speed == 0
     
-    # Get valid points (where speed != 0 and direction != 180)
+    # Get valid points (where speed != 0)
     valid_data_mask = ~mask
     valid_speed = speed[valid_data_mask]
-    valid_direction = direction[valid_data_mask]
+    
+    if valid_speed.size == 0:
+        # If no valid speed values are found, return the original arrays
+        return speed, direction, lat, lon
+    
+    # Prepare coordinates for interpolation
     x, y = np.meshgrid(np.arange(speed.shape[1]), np.arange(speed.shape[0]))
     valid_coords = np.column_stack((x[valid_data_mask], y[valid_data_mask]))
     target_coords = np.column_stack((x[mask], y[mask]))
-    
+
     # Interpolate values using IDW
     filled_speed = speed.copy()
     filled_direction = direction.copy()
+
+    # Only fill the speed values at mask locations
     filled_speed[mask] = idw_interpolation(valid_coords, valid_speed, target_coords)
-    filled_direction[mask] = idw_interpolation(valid_coords, valid_direction, target_coords)
-    
+
+    # Optionally, fill direction values if required (based on your logic)
+    # If you want to keep the original direction for speed=0, uncomment the next line:
+    # filled_direction[mask] = direction[mask]  # Retain original direction for speed=0
+
     return filled_speed, filled_direction, lat, lon
