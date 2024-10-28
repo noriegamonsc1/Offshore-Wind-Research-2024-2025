@@ -40,13 +40,13 @@ def load_data(input_files):
                     data_files.remove(input_file)
                     removed_files.append(input_file)
                     logger.info(f"{len(data_files)} Total data_files after removing index {i}, {removed_files}")
-                    continue  # Skip if all values are zero
+                    # continue  # Skip if all values are zero
                 else:
                     clean = (owi_speed, owi_dir, lat, lon)
                     all_arrays.append(fill_zeros(clean))
                     logger.info(f"{len(data_files)} Total data_files after cleaning index {i}, {len(all_arrays)}")
-            else:
-                all_arrays.append((owi_speed, owi_dir, lat, lon))
+            continue
+        all_arrays.append((owi_speed, owi_dir, lat, lon))
 
 def load_single_data(input_file):
     """
