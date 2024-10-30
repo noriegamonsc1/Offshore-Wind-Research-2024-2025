@@ -7,7 +7,7 @@ import offshore_wind_nj.config as config
 import re
 from datetime import datetime
 from typing import Tuple
-from offshore_wind_nj.data_cleaning import fill_zeros
+from offshore_wind_nj.data_cleaning import fill_zeros, find_zeros
 
 # Create a list of all .npz files in the processed data directory
 data_files = list(config.PROCESSED_DATA_DIR.glob('*.npz'))
@@ -27,7 +27,6 @@ def load_data(input_files):
     all_arrays = []  # Clear the list before loading new data
     removed_files = []
     for input_file in input_files:
-        # logger.info(f"Loading data from {input_file}...")
         with np.load(input_file) as data:
             owi_speed = data['owiSpeed']
             owi_dir = data['owiDir']
@@ -48,6 +47,36 @@ def load_data(input_files):
             #         # logger.info(f"{len(data_files)} Total data_files after cleaning index {i}, {len(all_arrays)}")
             # else:
             all_arrays.append((owi_speed, owi_dir, lat, lon))
+    process_arrays()
+
+def process_arrays():
+    '''
+    Process the loaded arrays to fill zeros and remove any that are invalid
+    '''
+    global all_arrays, removed_files
+    list_removed = []
+    
+    speed_indices = [i for i, arr in enumerate(all_arrays) if find_zeros(arr)]
+
+    # Create a list to hold indices of elements to remove
+    indices_to_remove = []
+
+    for i in speed_indices:
+        if np.all(all_arrays[i][0] == 0):
+            indices_to_remove.append(i)
+            removed_files = data_files[i]  # Store the removed file info
+            list_removed.append(removed_files)
+
+    # Fill zeros for remaining arrays
+    for i in speed_indices:
+        if i not in indices_to_remove:
+            all_arrays[i] = fill_zeros(all_arrays[i])
+    
+    # Now remove elements in reverse order to avoid index shifting
+    for i in sorted(indices_to_remove, reverse=True):
+        all_arrays.pop(i)
+        data_files.pop(i)
+
             
 
 def load_single_data(input_file):
