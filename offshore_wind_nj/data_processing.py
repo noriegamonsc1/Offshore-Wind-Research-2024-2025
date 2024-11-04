@@ -67,7 +67,7 @@ def flatten_data(all_arrays, mask=False):
     
     return flattened_data_list
 
-def scale_flattened_data(flattened_data_list):
+def scaler_flattened_data(flattened_data_list):
     """
     Concatenates all flattened arrays, fits a StandardScaler, and scales each array.
     
@@ -88,10 +88,26 @@ def scale_flattened_data(flattened_data_list):
     scaler = StandardScaler()
     scaler.fit(all_flattened_data)
 
-    # Step 3: Scale each individual flattened array
-    scaled_data_list = [scaler.transform(data) for data in flattened_data_list]
+    # # Step 3: Scale each individual flattened array
+    # scaled_data_list = [scaler.transform(data) for data in flattened_data_list]
 
-    return scaled_data_list#, scaler
+    return scaler
+
+def scale_flat_data(flattened_data_list, scaler):
+    scaled_data_list = []
+    error_indices = []
+    
+    for idx, data in enumerate(flattened_data_list):
+        try:
+            # Attempt to scale the data
+            scaled_data = scaler.transform([data])  # Wrap data in a list for 2D shape (1, n)
+            scaled_data_list.append(scaled_data[0])  # Add scaled data without extra list
+        except ValueError:
+            # Track the index if there's an issue with this data point
+            error_indices.append(idx)
+    
+    return scaled_data_list, error_indices
+
 
 def reshape_scaled_data(scaled_data_list, all_arrays): # This is for the Conv Autoencoder (remember that this fills the nan values)
     """

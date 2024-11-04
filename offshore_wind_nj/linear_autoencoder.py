@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from sklearn.model_selection import train_test_split
-from offshore_wind_nj.data_processing import flatten_data, scale_flattened_data
+from offshore_wind_nj.data_processing import flatten_data, scaler_flattened_data, scale_flat_data
 from offshore_wind_nj.data_loader import all_arrays
 from offshore_wind_nj.config import MODELS_DIR, FIGURES_DIR
 import matplotlib.pyplot as plt
@@ -70,8 +70,13 @@ def save_model_and_plot(model, train_losses, val_losses, model_path, plot_path):
 if __name__=='__main__':
     # Data processing
     flattened_data_list = flatten_data(all_arrays, mask=True)
-    scaled_data_list = scale_flattened_data(flattened_data_list)
-    scaled_data_np = np.vstack([file for file in scaled_data_list if not np.isnan(file).any()])
+    scaler = scaler_flattened_data(flattened_data_list)
+    scaled_data_np = scale_flat_data(flattened_data_list, scaler)[0]
+
+    '''
+    need to edit scale_flattened_data to scaler_flattened_data -> It will return the scaler, then it needs to be applied to each array
+    '''
+    # scaled_data_np = np.vstack([file for file in scaled_data_list if not np.isnan(file).any()])
     
     model = Autoencoder(input_dim=5, hidden_dim=4)  # Adjust input_dim based on the number of features
     optimizer = optim.Adam(model.parameters(), lr=0.001)
