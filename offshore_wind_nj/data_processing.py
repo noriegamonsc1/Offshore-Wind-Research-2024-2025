@@ -101,7 +101,7 @@ def scale_flat_data(flattened_data_list, scaler):
         try:
             # Attempt to scale the data
             scaled_data = scaler.transform([data])  # Wrap data in a list for 2D shape (1, n)
-            scaled_data_list.append(scaled_data[0])  # Add scaled data without extra list
+            scaled_data_list.append(scaled_data)  # Add scaled data without extra list
         except ValueError:
             # Track the index if there's an issue with this data point
             error_indices.append(idx)
