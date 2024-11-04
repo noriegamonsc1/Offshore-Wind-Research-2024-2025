@@ -7,7 +7,7 @@ import offshore_wind_nj.config as config
 import re
 from datetime import datetime
 from typing import Tuple
-from offshore_wind_nj.data_cleaning import fill_zeros, find_zeros
+from offshore_wind_nj.data_cleaning import fill_zeros, find_zeros, find_nan, fill_nan
 
 # Create a list of all .npz files in the processed data directory
 data_files = list(config.PROCESSED_DATA_DIR.glob('*.npz'))
@@ -76,7 +76,7 @@ def process_arrays():
     for i in sorted(indices_to_remove, reverse=True):
         all_arrays.pop(i)
         data_files.pop(i)
-
+    
             
 
 def load_single_data(input_file):
