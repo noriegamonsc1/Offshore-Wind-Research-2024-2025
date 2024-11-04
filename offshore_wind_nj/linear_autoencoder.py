@@ -43,8 +43,8 @@ def train_model(model, train_tensor, val_tensor, optimizer, criterion, num_epoch
             val_loss = criterion(val_output, val_tensor)
             val_losses.append(val_loss.item())
         
-        # if (epoch + 1) % 50 == 0:
-        #     print(f"Epoch [{epoch+1}/{num_epochs}], Train Loss: {train_loss.item():.4f}, Val Loss: {val_loss.item():.4f}")
+        if (epoch + 1) % 50 == 0:
+            print(f"Epoch [{epoch+1}/{num_epochs}], Train Loss: {train_loss.item():.4f}, Val Loss: {val_loss.item():.4f}")
     
     return train_losses, val_losses 
 
@@ -71,12 +71,12 @@ if __name__=='__main__':
     # Data processing
     flattened_data_list = flatten_data(all_arrays, mask=True)
     scaler = scaler_flattened_data(flattened_data_list)
-    scaled_data_np = scale_flat_data(flattened_data_list, scaler)[0]
+    scaled_data_list = scale_flat_data(flattened_data_list, scaler)[0]
 
     '''
     need to edit scale_flattened_data to scaler_flattened_data -> It will return the scaler, then it needs to be applied to each array
     '''
-    # scaled_data_np = np.vstack([file for file in scaled_data_list if not np.isnan(file).any()])
+    scaled_data_np = np.vstack([file for file in scaled_data_list if not np.isnan(file).any()])
     
     model = Autoencoder(input_dim=5, hidden_dim=4)  # Adjust input_dim based on the number of features
     optimizer = optim.Adam(model.parameters(), lr=0.001)
