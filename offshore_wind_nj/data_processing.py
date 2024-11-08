@@ -1,4 +1,4 @@
-from offshore_wind_nj.data_loader import all_arrays
+from offshore_wind_nj.data_loader import all_arrays, extract_datetime_from_filename
 from offshore_wind_nj.data_cleaning import find_nan, fill_nan
 import numpy as np
 from sklearn.preprocessing import StandardScaler
@@ -25,20 +25,23 @@ def fill_nan_all_arrays(all_arrays):
         all_arrays[i] = fill_nan(all_arrays[i])
     return all_arrays
 
-def flatten_data(all_arrays, mask=False):
+def flatten_data(all_arrays, data_files=None, mask=False):
     """
     Flattens the given arrays of wind speed, direction (converted to Cartesian coordinates), latitude, and longitude.
     
     Parameters:
     - all_arrays: iterable of tuples (speed, direction, lat, lon)
         Each tuple contains numpy arrays of shape (H, W).
+    - data_files: list of filenames, optional
+        List of data files, used for extracting dates.
     - mask: bool, optional (default is False)
         If True, apply a NaN mask to remove invalid values before flattening.
     
     Returns:
     - flattened_data_list: list of numpy arrays
-        Each entry in the list is a 2D numpy array of shape (Total_valid_pixels, 5) if mask=True,
-        or (Total_pixels, 5) if mask=False.
+        Each entry is a 2D numpy array of shape (Total_valid_pixels, 5) if mask=True, or (Total_pixels, 5) if mask=False.
+    - dates_arrays (optional): list of dates
+        List of extracted dates if data_files is provided.
     """
     flattened_data_list = []
     
@@ -61,11 +64,15 @@ def flatten_data(all_arrays, mask=False):
         dir_cos = np.cos(np.radians(direction_valid))
         dir_sin = np.sin(np.radians(direction_valid))
         
-        # Combine data into a single array for each set of (speed, direction, lat, lon)
-        flattened_data = np.column_stack((speed_valid, dir_cos, dir_sin, lat_valid, lon_valid))
+        # Combine data into a single array for each set of (speed, direction, lat, lon) 11/07/24: added the direction_valid to the list
+        flattened_data = np.column_stack((speed_valid, direction_valid, dir_cos, dir_sin, lat_valid, lon_valid))
         flattened_data_list.append(flattened_data)
     
-    return flattened_data_list
+    if data_files is not None:
+        dates_arrays = [extract_datetime_from_filename(file) for file in data_files]
+        return flattened_data_list, dates_arrays
+    else:
+        return flattened_data_list
 
 def scaler_flattened_data(flattened_data_list):
     """
