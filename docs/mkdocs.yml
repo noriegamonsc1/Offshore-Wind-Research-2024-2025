@@ -1,4 +1,37 @@
-site_name: Offshore-Wind-Research-2024-2025
-# 
-site_author: Cristian C Noriega M
-# 
+site_name: Offshore Wind NJ Project Documentation
+site_description: Comprehensive documentation for the Offshore Wind NJ project.
+site_author: Your Name
+site_url: https://yourprojecturl.com
+
+theme:
+  name: material
+  palette:
+    primary: 'indigo'
+    accent: 'indigo'
+  font:
+    text: 'Roboto'
+    code: 'Roboto Mono'
+  logo: 'images/logo.png'
+  favicon: 'images/favicon.ico'
+
+nav:
+  - Home: index.md
+  - Getting Started: getting-started.md
+  - SAR Wind Plot: sar_wind_plot.md
+  # Add other pages here
+
+markdown_extensions:
+  - admonition
+  - codehilite
+  - footnotes
+  - meta
+  - toc:
+      permalink: true
+
+extra_css:
+  - css/custom.css
+
+extra_javascript:
+  - js/custom.js
+
+# Add any other settings you need
