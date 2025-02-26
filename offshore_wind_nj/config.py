@@ -16,6 +16,7 @@ INTERIM_DATA_DIR = DATA_DIR / "interim"
 PROCESSED_DATA_DIR = DATA_DIR / "processed"
 EXTERNAL_DATA_DIR = DATA_DIR / "external"
 ERA5_DATA_DIR = DATA_DIR / "ERA5_reanalysis_data"
+BUOY_DATA_DIR = DATA_DIR / "buoys_data"
 
 MODELS_DIR = PROJ_ROOT / "models"
 
